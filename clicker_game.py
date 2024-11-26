@@ -1,80 +1,135 @@
-import tkinter as tk
-from tkinter import font
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtCore import QTimer, Qt
 
-score = 0
-high_score = 0
-game_active = False
-remaining_time = 60 
+class ClickerGame(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.score = 0
+        self.high_score = 0
+        self.remaining_time = 60
+        self.game_active = False
 
-def click_button():
-    global score
-    if game_active:
-        score += 1
-        score_label.config(text=f"Score: {score}")
+        self.init_ui()
+        
+    def init_ui(self):
+        self.setWindowTitle("Clicker Game")
+        self.setGeometry(100, 100, 400, 400)
+        self.setStyleSheet("background-color: #f0f0f0;")
 
-def reset_game():
-    global score, remaining_time, game_active
-    score = 0
-    remaining_time = 60 
-    game_active = False
-    score_label.config(text=f"Score: {score}")
-    timer_label.config(text=f"Time left: {remaining_time} sec")
+        self.title_label = QLabel("Welcome to Clicker Game!", self)
+        self.title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #333;")
+        self.title_label.setAlignment(Qt.AlignCenter)
 
-def update_timer():
-    global remaining_time
-    if remaining_time > 0 and game_active:
-        remaining_time -= 1
-        timer_label.config(text=f"Time left: {remaining_time} sec")
-        root.after(1000, update_timer)  
+        self.timer_label = QLabel(f"Time left: {self.remaining_time} sec", self)
+        self.timer_label.setStyleSheet("font-size: 18px; color: #555;")
+        self.timer_label.setAlignment(Qt.AlignCenter)
 
-def start_game():
-    global game_active, score, remaining_time
-    game_active = True
-    score = 0
-    remaining_time = 60  
-    score_label.config(text=f"Score: {score}")
-    high_score_label.config(text=f"High Score: {high_score}")
-    timer_label.config(text=f"Time left: {remaining_time} sec")
-    
-    update_timer()
-    root.after(60000, end_game)
+        self.score_label = QLabel(f"Score: {self.score}", self)
+        self.score_label.setStyleSheet("font-size: 18px; color: #555;")
+        self.score_label.setAlignment(Qt.AlignCenter)
 
-def end_game():
-    global game_active, high_score, score
-    game_active = False
-    if score > high_score:
-        high_score = score
-        high_score_label.config(text=f"High Score: {high_score}")
+        self.high_score_label = QLabel(f"High Score: {self.high_score}", self)
+        self.high_score_label.setStyleSheet("font-size: 18px; color: #555;")
+        self.high_score_label.setAlignment(Qt.AlignCenter)
 
-def setup_window(root):
-    root.title("Clicker Game")
-    root.geometry("400x400")
-    root.configure(bg='#f0f0f0')
+        self.start_button = QPushButton("Start Game", self)
+        self.start_button.clicked.connect(self.start_game)
+        self.start_button.setStyleSheet(self.button_style())
 
-    title_font = font.Font(family="Helvetica", size=16, weight="bold")
-    title_label = tk.Label(root, text="Welcome to Clicker Game!", bg='#f0f0f0', font=title_font)
-    title_label.pack(pady=10)
+        self.click_button = QPushButton("Click Me!", self)
+        self.click_button.clicked.connect(self.click_button_action)
+        self.click_button.setStyleSheet(self.button_style())
+
+        self.reset_button = QPushButton("Reset", self)
+        self.reset_button.clicked.connect(self.reset_game)
+        self.reset_button.setStyleSheet(self.button_style())
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.title_label)
+
+        layout.addSpacing(20)
+        layout.addWidget(self.timer_label)
+        
+        layout.addSpacing(20)
+        layout.addWidget(self.score_label)
+        
+        layout.addSpacing(20)
+        layout.addWidget(self.high_score_label)
+
+        layout.addSpacing(30)
+
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.start_button)
+        button_layout.addWidget(self.click_button)
+        button_layout.addWidget(self.reset_button)
+
+        layout.addLayout(button_layout)
+
+        layout.setAlignment(Qt.AlignCenter)
+        
+        self.setLayout(layout)
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_timer)
+
+    def button_style(self):
+        return """
+            QPushButton {
+                font-size: 16px;
+                background-color: #4CAF50; /* Зеленый фон */
+                color: white; /* Белый текст */
+                border: none;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #45a049; /* Темный зеленый при наведении */
+            }
+            QPushButton:pressed {
+                background-color: #388E3C; /* Темный зеленый при нажатии */
+            }
+        """
+
+    def click_button_action(self):
+        if self.game_active:
+            self.score += 1
+            self.score_label.setText(f"Score: {self.score}")
+
+    def reset_game(self):
+        self.score = 0
+        self.remaining_time = 60
+        self.game_active = False
+        self.score_label.setText(f"Score: {self.score}")
+        self.timer_label.setText(f"Time left: {self.remaining_time} sec")
+
+    def update_timer(self):
+        if self.remaining_time > 0 and self.game_active:
+            self.remaining_time -= 1
+            self.timer_label.setText(f"Time left: {self.remaining_time} sec")
+        else:
+            self.end_game()
+
+    def start_game(self):
+        if not self.game_active:
+            self.game_active = True
+            self.score = 0
+            self.remaining_time = 60
+            self.score_label.setText(f"Score: {self.score}")
+            self.high_score_label.setText(f"High Score: {self.high_score}")
+            self.timer_label.setText(f"Time left: {self.remaining_time} sec")
+            self.timer.start(1000)
+            QTimer.singleShot(60000, self.end_game)  
+
+    def end_game(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
+            self.high_score_label.setText(f"High Score: {self.high_score}")
+        self.game_active = False
+        self.timer.stop()
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    setup_window(root)
-
-    timer_label = tk.Label(root, text=f"Time left: {remaining_time} sec", bg='#f0f0f0', font=("Helvetica", 14))
-    timer_label.pack(pady=10)
-
-    score_label = tk.Label(root, text=f"Score: {score}", bg='#f0f0f0', font=("Helvetica", 14))
-    score_label.pack(pady=10)
-
-    high_score_label = tk.Label(root, text=f"High Score: {high_score}", bg='#f0f0f0', font=("Helvetica", 14))
-    high_score_label.pack(pady=10)
-
-    start_btn = tk.Button(root, text="Start Game", command=start_game, bg='#2196F3', fg='white', font=("Helvetica", 12))
-    start_btn.pack(pady=20)
-
-    click_btn = tk.Button(root, text="Click Me!", command=click_button, bg='#4CAF50', fg='white', font=("Helvetica", 12))
-    click_btn.pack(pady=20)
-
-    reset_btn = tk.Button(root, text="Reset", command=reset_game, bg='#f44336', fg='white', font=("Helvetica", 12))
-    reset_btn.pack(pady=20)
-
-    root.mainloop()
+    app = QApplication(sys.argv)
+    game = ClickerGame()
+    game.show()
+    sys.exit(app.exec_())
