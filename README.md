@@ -1,12 +1,14 @@
-Добро пожаловать в **Clicker Game!** Это простая игра, разработанная с использованием библиотеки Tkinter на Python. В игре вам предстоит нажимать на кнопку и зарабатывать очки. Каждое нажатие увеличивает ваш счет, и ваша цель — добиться наивысшего результата за 60 секунд! 
+**Welcome to the Clicker Game!** This is a simple game developed using the Tkinter library in Python. In the game you have to click on the button and earn points. Each tap increases your score, and your goal is to achieve the highest score in 60 seconds!
 
-Игровой процесс:
-- Нажмите кнопку **Start Game**, чтобы начать игру.
-- Нажимайте кнопку **Click Me!**, чтобы увеличить ваш счет.
-- Следите за таймером и старайтесь набрать максимальное количество очков до его истечения.
-- Если вы хотите начать игру заново или сбросить текущий счет, нажмите кнопку **Reset**.
+Gameplay:
 
-Запуск игры:
-1. Убедитесь, что у вас установлен Python (версия 3.8 или выше).
-2. Убедитесь, что библиотека Tkinter включена в вашу установку Python.
-3. Запустите файл с помощью команды: `python clicker_game.py` или `python3 clicker_game.py`, в зависимости от вашей системы.
+- Click the **Start** Game button to start the game.
+- Click the **Click Me!** button to increase your score.
+- Keep an eye on the timer and try to score the maximum number of points before it expires.
+- If you want to start the game again or reset the current score, press the **Reset** button.
+
+Starting the game:
+
+1. Make sure that you have Python installed (version 3.8 or higher).
+2. Make sure that the Tkinter library is included in your Python installation.
+3. Run the file using the command: `python clicker_game.py` or `python3 clicker_game.py` depending on your system.
